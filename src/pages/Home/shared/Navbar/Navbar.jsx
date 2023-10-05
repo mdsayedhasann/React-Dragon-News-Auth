@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import navbar from "./Navbar.css";
 import defaultAvatar from "../../../../assets/user.png";
+import { AuthContext } from "../../../../AuthProvider/AuthProvider";
 
 const Navbar = () => {
+  const { logout, user } = useContext(AuthContext);
+  const handleLogout = () => {
+    logout()
+      .then(() => {
+        console.log("Logout Success");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
   const navLink = (
     <>
       <li>
@@ -59,10 +70,21 @@ const Navbar = () => {
           <ul className="menu menu-horizontal px-1">{navLink}</ul>
         </div>
         <div className="navbar-end flex gap-4 items-center">
+          {
+            user && 
+            <p> {user.email} </p>
+          }
           <img className="w-6" src={defaultAvatar} alt="" />
-          <Link>
-            <button className="btn">Login</button>
-          </Link>
+
+          {user ? (
+            <button onClick={handleLogout} className="btn">
+              Logout
+            </button>
+          ) : (
+            <Link to="/login">
+              <button className="btn">Login</button>
+            </Link>
+          )}
         </div>
       </div>
     </div>
